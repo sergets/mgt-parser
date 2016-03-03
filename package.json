@@ -1,0 +1,20 @@
+{
+    "name": "mgt-parser",
+    "version": "0.0.1",
+    "description": "A parser for Moscow transit timetables",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "express": "~4"
+    },
+    "engines": {
+        "node": "0.12.7"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sergets/mgt-parser.git"
+    },
+    "license": "MIT"
+}
