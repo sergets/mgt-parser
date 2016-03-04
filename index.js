@@ -1,10 +1,18 @@
-var express = require('express');
-var app = express();
+var timetable = require('lib/trn.js'),
+    express = require('express'),
+    app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
 app.get('/', function(request, response) {
     response.json({ ok : true });
+});
+
+app.get('/:type/:route/', function(request, response) {
+    timetable.getId(request.params.type, request.params.route)
+        .then(timetable.getAllTimetables.bind(timetable))
+        .then(response.json.bind(response));
+
 });
 
 app.listen(app.get('port'), function() {
