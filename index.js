@@ -8,9 +8,9 @@ app.get('/', function(request, response) {
     response.json({ ok : true });
 });
 
-app.get('/:type/:route/', function(request, response) {
+app.get('/:type/:route/:day', function(request, response) {
     timetable.getId(request.params.type, request.params.route)
-        .then(timetable.getAllTimetables.bind(timetable))
+        //.then(function(id) {}timetable.getTimetableForDay.bind(timetable))
         .then(response.json.bind(response));
 
 });
