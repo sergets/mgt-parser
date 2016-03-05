@@ -10,7 +10,8 @@
         "express": "~4",
         "extend": "*",
         "js-base64": "*",
-        "request-promise": "*"
+        "request-promise": "*",
+        "deep-equal": "*"
     },
     "engines": {
         "node": "0.12.7"

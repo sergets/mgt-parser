@@ -13,8 +13,8 @@ app.get('/:type/:route', function(request, response) {
         .then(function(id) {
             return timetable.getAllTimetables(id);
         })
-        .then(response.json.bind(response));
-
+        .then(response.json.bind(response))
+        .catch(response.json.bind(response));
 });
 
 app.listen(app.get('port'), function() {
