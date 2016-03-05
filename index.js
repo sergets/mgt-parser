@@ -11,7 +11,7 @@ app.get('/', function(request, response) {
 app.get('/:type/:route', function(request, response) {
     timetable.getId(request.params.type, request.params.route)
         .then(function(id) {
-            return timetable.getTimetableForDay(id, 0);
+            return timetable.getAllTimetables(id);
         })
         .then(response.json.bind(response));
 
