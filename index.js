@@ -9,10 +9,7 @@ app.get('/', function(request, response) {
 });
 
 app.get('/:type/:route', function(request, response) {
-    timetable.getId(request.params.type, request.params.route)
-        .then(function(id) {
-            return timetable.getAllTimetables(id);
-        })
+    timetable.getAllTimetables(request.params.type, request.params.route)
         .then(response.json.bind(response))
         .catch(response.json.bind(response));
 });
