@@ -4,11 +4,38 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var i = 0;
+var DELTA = 2000;
+
+function fetchTimetableFromServer(type, route) {
+    return timetable.getAllTimetables(type, route)
+        .then(function(res) { 
+            return yadisk.save(
+                type + '/' + route + '.json',
+                JSON.stringify(compactifier.compactifyTimetables(res))
+            ).then(function() {
+                return res;
+            });
+        });
+}
+
+timetable.getAllRoutes('troll').then(function(routes) {
+    var i = 0;
+    setInterval(function() {
+        console.log('// fetching ', routes[++i]);
+        if(i == routes.length) {
+            timetable.getAllRoutes('troll').then(function(rts) {
+                routes = rts;
+                i = 0;
+            });
+        }
+    }, DELTA);
+});
+
+/*var i = 0;
 
 setInterval(function() {
     console.log('scheduled action #' + (i++));
-}, 5000);
+}, 5000);*/
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -29,19 +56,11 @@ app
             .then(function(data) { return new Date() - new Date(data.modified) < 1000 * 86400 * 7; })
             .then(function(isNewEnough) {
                 return isNewEnough?
-                    yadisk.read(file).then(JSON.parse).then(response.json.bind(response)) :
-                    timetable.getAllTimetables(request.params.type, request.params.route)
-                        .then(function(res) { 
-                            return yadisk.save(
-                                request.params.type + '/' + request.params.route + '.json',
-                                JSON.stringify(compactifier.compactifyTimetables(res))
-                            ).then(function() {
-                                return res;
-                            });
-                        })
-                        .then(response.json.bind(response))
-                        .catch(response.json.bind(response));
-            });
+                    yadisk.read(file).then(JSON.parse) :
+                    fetchTimetableFromServer(request.params.type, request.params.route);
+            })      
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
     })
     .get('/:type/:route/compact', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route, true)
