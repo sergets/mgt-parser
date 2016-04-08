@@ -4,6 +4,12 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
+var i = 0;
+
+setInterval(function() {
+    console.log('scheduled action #' + (i++));
+}, 5000);
+
 app.set('port', (process.env.PORT || 5000));
 
 app.get('/', function(request, response) {
