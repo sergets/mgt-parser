@@ -9,6 +9,11 @@ app.get('/', function(request, response) {
 });
 
 app
+    .get('/:type', function(request, response) {
+        timetable.getAllRoutes(request.params.type)
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
+    })
     .get('/:type/:route', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route)
             .then(response.json.bind(response))
