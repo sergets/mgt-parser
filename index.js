@@ -4,7 +4,7 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var DELTA = 2000;
+var DELTA = 20000;
 
 function fetchTimetableFromServer(type, route) {
     return timetable.getAllTimetables(type, route)
@@ -21,7 +21,8 @@ function fetchTimetableFromServer(type, route) {
 timetable.getAllRoutes('troll').then(function(routes) {
     var i = 0;
     setInterval(function() {
-        console.log('// fetching ', routes[++i]);
+        routes[i] && fetchTimetableFromServer('troll', routes[i]);
+        console.log('// fetching ', routes[i]);
         if(i == routes.length) {
             timetable.getAllRoutes('troll').then(function(rts) {
                 routes = rts;
