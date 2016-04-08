@@ -1,4 +1,5 @@
 var timetable = require('./lib/pass3.js'),
+    compactifier = require('./lib/compactifier.js'),
     express = require('express'),
     app = express();
 
@@ -21,6 +22,7 @@ app
     })
     .get('/:type/:route/compact', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route, true)
+            .then(compactifier.compactifyTimetables)
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     });
