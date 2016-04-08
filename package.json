@@ -14,7 +14,8 @@
         "deep-equal": "*",
         "cheerio" : "*",
         "iconv" : "*",
-        "urlencode" : "*"
+        "urlencode" : "*",
+        "yandex-disk" : "*"
     },
     "engines": {
         "node": "0.12.7"
