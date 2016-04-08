@@ -11,11 +11,6 @@ app.get('/', function(request, response) {
 });
 
 app
-    .get('/disk', function(request, response) {
-        yadisk.getData('bus')
-            .then(response.json.bind(response))
-            .catch(response.json.bind(response));
-    })
     .get('/:type', function(request, response) {
         timetable.getAllRoutes(request.params.type)
             .then(response.json.bind(response))
@@ -29,6 +24,11 @@ app
     .get('/:type/:route/compact', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route, true)
             .then(compactifier.compactifyTimetables.bind(compactifier))
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
+    })
+    .get('/disk', function(request, response) {
+        yadisk.getData('bus')
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
