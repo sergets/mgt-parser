@@ -11,7 +11,10 @@
         "extend": "*",
         "js-base64": "*",
         "request-promise": "*",
-        "deep-equal": "*"
+        "deep-equal": "*",
+        "cheerio" : "*",
+        "iconv" : "*",
+        "urlencode" : "*"
     },
     "engines": {
         "node": "0.12.7"
