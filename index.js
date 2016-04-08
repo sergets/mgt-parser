@@ -1,5 +1,6 @@
 var timetable = require('./lib/pass3.js'),
     compactifier = require('./lib/compactifier.js'),
+    yadisk = require('./lib/yadisk.js'),
     express = require('express'),
     app = express();
 
@@ -10,6 +11,11 @@ app.get('/', function(request, response) {
 });
 
 app
+    .get('/disk', function(request, response) {
+        yadisk.getData('bus')
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
+    })
     .get('/:type', function(request, response) {
         timetable.getAllRoutes(request.params.type)
             .then(response.json.bind(response))
@@ -25,7 +31,7 @@ app
             .then(compactifier.compactifyTimetables.bind(compactifier))
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
-    });
+    })
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
