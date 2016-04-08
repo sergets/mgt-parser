@@ -2,9 +2,9 @@
     "name": "mgt-parser",
     "version": "0.0.1",
     "description": "A parser for Moscow transit timetables",
-    "main": "index.js",
+    "main": "schedule.js",
     "scripts": {
-        "start": "node index.js"
+        "start": "node schedule.js"
     },
     "dependencies": {
         "express": "~4",
