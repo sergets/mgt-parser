@@ -19,7 +19,7 @@ app
     .get('/:type/:route', function(request, response) {
         var file = request.params.type + '/' + request.params.route + '.json';
         
-        disk.getData(file)
+        yadisk.getData(file)
             .then(function(data) { return new Date() - new Date(data.modified) < 1000 * 86400 * 7; })
             .then(function(isNewEnough) {
                 return isNewEnough?
