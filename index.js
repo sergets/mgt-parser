@@ -1,4 +1,4 @@
-var timetable = require('./lib/trn.js'),
+var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
