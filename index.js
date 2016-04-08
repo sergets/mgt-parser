@@ -19,8 +19,10 @@ app
     .get('/:type/:route', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route)
             .then(function(res) { 
-                yadisk.save(request.params.type + '/' + request.params.route + '.json', JSON.stringify(res));
-                return res;
+                return yadisk.save(request.params.type + '/' + request.params.route + '.json', JSON.stringify(res)).then(
+                    function(r) { console.log('ok', r) ; return res; },
+                    function(e) { console.log('err', e) ; return res; }
+                );
             })
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
