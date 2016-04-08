@@ -17,17 +17,25 @@ app
             .catch(response.json.bind(response));
     })
     .get('/:type/:route', function(request, response) {
-        timetable.getAllTimetables(request.params.type, request.params.route)
-            .then(function(res) { 
-                return yadisk.save(
-                    request.params.type + '/' + request.params.route + '.json',
-                    JSON.stringify(compactifier.compactifyTimetables(res))
-                ).then(function() {
-                    return res;
-                });
-            })
-            .then(response.json.bind(response))
-            .catch(response.json.bind(response));
+        var file = request.params.type + '/' + request.params.route + '.json';
+        
+        disk.getData(file)
+            .then(function(data) { return new Date() - new Date(data.modified) < 1000 * 86400 * 7; })
+            .then(function(isNewEnough) {
+                return isNewEnough?
+                    yadisk.read(file).then(JSON.parse).then(response.json.bind(response)) :
+                    timetable.getAllTimetables(request.params.type, request.params.route)
+                        .then(function(res) { 
+                            return yadisk.save(
+                                request.params.type + '/' + request.params.route + '.json',
+                                JSON.stringify(compactifier.compactifyTimetables(res))
+                            ).then(function() {
+                                return res;
+                            });
+                        })
+                        .then(response.json.bind(response))
+                        .catch(response.json.bind(response));
+            });
     })
     .get('/:type/:route/compact', function(request, response) {
         timetable.getAllTimetables(request.params.type, request.params.route, true)
