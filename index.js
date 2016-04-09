@@ -4,7 +4,7 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var DELTA = 20000;
+var DELTA = 5000;
 
 function fetchTimetableFromServer(type, route) {
     return timetable.getAllTimetables(type, route)
@@ -19,7 +19,7 @@ function fetchTimetableFromServer(type, route) {
 }
 
 timetable.getAllRoutes('bus').then(function(routes) {
-    var i = 0;
+    var i = 210;
     setInterval(function() {
         routes[i] && fetchTimetableFromServer('bus', routes[i]);
         console.log('// fetching ', routes[i]);
