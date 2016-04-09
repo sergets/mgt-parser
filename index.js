@@ -21,6 +21,7 @@ function fetchTimetableFromServer(type, route) {
 timetable.getAllRoutes('troll').then(function(routes) {
     var i = 0;
     setInterval(function() {
+        i++;
         routes[i] && fetchTimetableFromServer('troll', routes[i]);
         console.log('// fetching ', routes[i]);
         if(i == routes.length) {
