@@ -18,18 +18,18 @@ function fetchTimetableFromServer(type, route) {
         });
 }
 
-timetable.getAllRoutes('troll').then(function(routes) {
+timetable.getAllRoutes('bus').then(function(routes) {
     var i = 0;
     setInterval(function() {
-        i++;
-        routes[i] && fetchTimetableFromServer('troll', routes[i]);
+        routes[i] && fetchTimetableFromServer('bus', routes[i]);
         console.log('// fetching ', routes[i]);
         if(i == routes.length) {
-            timetable.getAllRoutes('troll').then(function(rts) {
+            timetable.getAllRoutes('bus').then(function(rts) {
                 routes = rts;
                 i = 0;
             });
         }
+        i++;
     }, DELTA);
 });
 
