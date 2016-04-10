@@ -13,7 +13,7 @@ function logEvent(msg) {
     }, function() {
         return [{ date : +new Date(), event : msg }];
     }).then(function(log) {
-        yadisk.write('log.json', log);
+        yadisk.save('log.json', log);
     });
 }
 
