@@ -4,7 +4,8 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var DELTA = 15000;
+var DELTA = 15000,
+    TYPES = ['tram', 'troll', 'bus'];
 
 function logEvent(msg) {
     yadisk.read('log.json').then(function(log) {
@@ -41,13 +42,25 @@ function fetchTimetableFromServer(type, route) {
         });
 }
 
-timetable.getAllRoutes('bus').then(function(routes) {
+function fetchAllRoutes() {
+    return Promise.all(TYPES.map(function(type) {
+        return timetable.getAllRoutes(type);
+    })).then(function(res) {
+        return [].concat.apply([], res.map(function(typeRes, i) {
+            return typeRes.map(function(typeRoute) {
+                return { type : TYPES[i], route : typeRoute };
+            });
+        }));
+    })
+}
+
+Promise.all(fetchAllRoutes.then(function(routes) {
     var i = 0;
     setInterval(function() {
-        routes[i] && fetchTimetableFromServer('bus', routes[i]);
-        console.log('// fetching ', routes[i]);
+        routes[i] && fetchTimetableFromServer(routes[i].type, routes[i].route);
+        console.log('fetching ', JSON.stringify(routes[i]));
         if(i == routes.length) {
-            timetable.getAllRoutes('bus').then(function(rts) {
+            fetchAllRoutes().then(function(rts) {
                 routes = rts;
                 i = 0;
             });
