@@ -8,13 +8,22 @@ var DELTA = 15000;
 
 function fetchTimetableFromServer(type, route) {
     return timetable.getAllTimetables(type, route)
-        .then(function(res) { 
-            return yadisk.save(
-                type + '/' + route + '.json',
-                compactifier.compactifyTimetables(res)
-            ).then(function() {
-                return res;
-            });
+        .then(function(res) {
+            var file = type + '/' + route + '.json';
+            yadisk.getData(file)
+                .then(function(data) { return data.name && yadisk.read(file); })
+                .then(function(cached) { 
+                    if(!cached || Object.keys(cached).some(function(key) {
+                        return (cached[key] && cached[key].data.valid) != (res[key] && res[key].data.valid);
+                    })) {
+                        console.log('updated ' + type + ' #' + route + ': was ' + Object.keys(cached).map(function(key) { return cached[key] && cached[key].data.valid }) + ', became: ' + Object.keys(res).map(function(key) { return res[key] && res[key].data.valid }));
+                        return yadisk.save(compactifier.compactifyTimetables(res));
+                    }
+                    else {
+                        console.log('not updating ' + type + ' #' + route);
+                    }
+                });
+            return res;
         });
 }
 
