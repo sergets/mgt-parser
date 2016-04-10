@@ -54,7 +54,7 @@ function fetchAllRoutes() {
     })
 }
 
-Promise.all(fetchAllRoutes.then(function(routes) {
+fetchAllRoutes().then(function(routes) {
     var i = 0;
     setInterval(function() {
         routes[i] && fetchTimetableFromServer(routes[i].type, routes[i].route);
