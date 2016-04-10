@@ -97,7 +97,7 @@ app
     })
     .get('/:type/:route/original', function(request, response) {
         response.header('Access-Control-Allow-Origin', '*');
-        timetable.getAllTimetables(type, route)
+        timetable.getAllTimetables(request.params.type, request.params.route)
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
