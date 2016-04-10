@@ -14,10 +14,10 @@ function fetchTimetableFromServer(type, route) {
                 .then(function(data) { console.log('already having file' + data && data.name + 'at ydisk'); return data.name && yadisk.read(file); })
                 .then(function(cached) { 
                     if(!cached || Object.keys(cached).some(function(key) {
-                        console.log('comparing ' + JSON.stringify(cached[key]) + 'to' + JSON.stringify(res[key]));
+                        if (key == 'data') return; 
                         return (cached[key] && cached[key].data.valid) != (res[key] && res[key].data.valid);
                     })) {
-                        console.log('updated ' + type + ' #' + route + ': was ' + Object.keys(cached).map(function(key) { return cached[key] && cached[key].data.valid }) + ', became: ' + Object.keys(res).map(function(key) { return res[key] && res[key].data.valid }));
+                        console.log('updated ' + type + ' #' + route + ': was ' + Object.keys(cached).filter(function(key) { return key !== 'data'; }).map(function(key) { return cached[key] && cached[key].data.valid }) + ', became: ' + Object.keys(res).filter(function(key) { return key !== 'data'; }).map(function(key) { return res[key] && res[key].data.valid }));
                         return yadisk.save(compactifier.compactifyTimetables(res));
                     }
                     else {
