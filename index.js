@@ -95,6 +95,12 @@ app
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
+    .get('/:type/:route/original', function(request, response) {
+        response.header('Access-Control-Allow-Origin', '*');
+        timetable.getAllTimetables(type, route)
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
+    })
     .get('/:type/:route/compact', function(request, response) {
         var file = request.params.type + '/' + request.params.route + '.json';
         
