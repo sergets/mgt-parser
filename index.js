@@ -11,9 +11,10 @@ function fetchTimetableFromServer(type, route) {
         .then(function(res) {
             var file = type + '/' + route + '.json';
             yadisk.getData(file)
-                .then(function(data) { return data.name && yadisk.read(file); })
+                .then(function(data) { console.log('already having file' + data && data.name + 'at ydisk'); return data.name && yadisk.read(file); })
                 .then(function(cached) { 
                     if(!cached || Object.keys(cached).some(function(key) {
+                        console.log('comparing ' + JSON.stringify(cached[key]) + 'to' + JSON.stringify(res[key]));
                         return (cached[key] && cached[key].data.valid) != (res[key] && res[key].data.valid);
                     })) {
                         console.log('updated ' + type + ' #' + route + ': was ' + Object.keys(cached).map(function(key) { return cached[key] && cached[key].data.valid }) + ', became: ' + Object.keys(res).map(function(key) { return res[key] && res[key].data.valid }));
