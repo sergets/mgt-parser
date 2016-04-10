@@ -11,7 +11,7 @@ function fetchTimetableFromServer(type, route) {
         .then(function(res) { 
             return yadisk.save(
                 type + '/' + route + '.json',
-                JSON.stringify(compactifier.compactifyTimetables(res))
+                compactifier.compactifyTimetables(res)
             ).then(function() {
                 return res;
             });
@@ -19,7 +19,7 @@ function fetchTimetableFromServer(type, route) {
 }
 
 timetable.getAllRoutes('bus').then(function(routes) {
-    var i = 210;
+    var i = 0;
     setInterval(function() {
         routes[i] && fetchTimetableFromServer('bus', routes[i]);
         console.log('// fetching ', routes[i]);
@@ -32,12 +32,6 @@ timetable.getAllRoutes('bus').then(function(routes) {
         i++;
     }, DELTA);
 });
-
-/*var i = 0;
-
-setInterval(function() {
-    console.log('scheduled action #' + (i++));
-}, 5000);*/
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -58,15 +52,22 @@ app
             .then(function(data) { return new Date() - new Date(data.modified) < 1000 * 86400 * 7; })
             .then(function(isNewEnough) {
                 return isNewEnough?
-                    yadisk.read(file).then(JSON.parse) :
+                    yadisk.read(file).then(compactifier.decompactifyTimetables.bind(compactifier)) :
                     fetchTimetableFromServer(request.params.type, request.params.route);
             })      
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
     .get('/:type/:route/compact', function(request, response) {
-        timetable.getAllTimetables(request.params.type, request.params.route, true)
-            .then(compactifier.compactifyTimetables.bind(compactifier))
+        var file = request.params.type + '/' + request.params.route + '.json';
+        
+        yadisk.getData(file)
+            .then(function(data) { return new Date() - new Date(data.modified) < 1000 * 86400 * 7; })
+            .then(function(isNewEnough) {
+                return isNewEnough?
+                    yadisk.read(file) :
+                    fetchTimetableFromServer(request.params.type, request.params.route).then(compactifier.compactifyTimetables.bind(compactifier));
+            })      
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
