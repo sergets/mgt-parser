@@ -4,7 +4,7 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var DELTA = 5000;
+var DELTA = 15000;
 
 function fetchTimetableFromServer(type, route) {
     return timetable.getAllTimetables(type, route)
@@ -58,6 +58,11 @@ app
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
     })
+    .get('/:type/:route/original', function(request, response) {
+        fetchTimetableFromServer(request.params.type, request.params.route)  
+            .then(response.json.bind(response))
+            .catch(response.json.bind(response));
+    })
     .get('/:type/:route/compact', function(request, response) {
         var file = request.params.type + '/' + request.params.route + '.json';
         
@@ -70,12 +75,7 @@ app
             })      
             .then(response.json.bind(response))
             .catch(response.json.bind(response));
-    })
-    .get('/disk', function(request, response) {
-        yadisk.getData('bus')
-            .then(response.json.bind(response))
-            .catch(response.json.bind(response));
-    })
+    });
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
