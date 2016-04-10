@@ -4,7 +4,7 @@ var timetable = require('./lib/pass3.js'),
     express = require('express'),
     app = express();
 
-var DELTA = 15000,
+var DELTA = 60000,
     TYPES = ['tram', 'troll', 'bus'];
 
 function logEvent(msg) {
@@ -112,5 +112,3 @@ app
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
 });
-
-
