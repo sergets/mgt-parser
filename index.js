@@ -6,22 +6,35 @@ var timetable = require('./lib/pass3.js'),
 
 var DELTA = 15000;
 
+function logEvent(msg) {
+    yadisk.read('log.json').then(function(log) {
+        log.push({ date : +new Date(), event : msg });
+        return log;
+    }, function() {
+        return [{ date : +new Date(), event : msg }];
+    }).then(function(log) {
+        yadisk.write('log.json', log);
+    });
+}
+
 function fetchTimetableFromServer(type, route) {
     return timetable.getAllTimetables(type, route)
         .then(function(res) {
             var file = type + '/' + route + '.json';
             yadisk.getData(file)
-                .then(function(data) { console.log('already having file' + data && data.name + 'at ydisk'); return data.name && yadisk.read(file); })
+                .then(function(data) { return data.name && yadisk.read(file); })
                 .then(function(cached) { 
-                    if(!cached || Object.keys(cached).some(function(key) {
+                    if(!cached) {
+                        logEvent({ event : 'created', type : type, route : route });
+                        yadisk.save(file, compactifier.compactifyTimetables(res));
+                    }
+                    else if(Object.keys(cached).some(function(key) {
                         if (key == 'data') return; 
                         return (cached[key] && cached[key].data.valid) != (res[key] && res[key].data.valid);
                     })) {
-                        console.log('updated ' + type + ' #' + route + ': was ' + Object.keys(cached).filter(function(key) { return key !== 'data'; }).map(function(key) { return cached[key] && cached[key].data.valid }) + ', became: ' + Object.keys(res).filter(function(key) { return key !== 'data'; }).map(function(key) { return res[key] && res[key].data.valid }));
-                        return yadisk.save(compactifier.compactifyTimetables(res));
-                    }
-                    else {
-                        console.log('not updating ' + type + ' #' + route);
+                        logEvent({ event : 'updated', type : type, route : route });
+                        yadisk.save(type + '/' + route +  '.' + (+new Date()) + '.old.json', cached);
+                        yadisk.save(file, compactifier.compactifyTimetables(res));
                     }
                 });
             return res;
