@@ -8,7 +8,7 @@ A working instance is at http://mgt-parser.herokuapp.com/
 
 Other types are `bus` and `troll`. Data is stored to a user's yandex.disk.
 
-# timetable syntax
+### timetable syntax
 
 ````js
 {
