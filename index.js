@@ -32,6 +32,8 @@ function fetchTimetableFromServer(type, route) {
                     else if(Object.keys(cached).some(function(key) {
                         if (key == 'data') return; 
                         return (cached[key] && cached[key].data.valid) != (res[key] && res[key].data.valid);
+                    }) || Object.keys(res).some(function(key) {
+                        return !cached[key];
                     })) {
                         logEvent({ event : 'updated', type : type, route : route });
                         yadisk.save(type + '/' + route +  '.' + (+new Date()) + '.old.json', cached);
